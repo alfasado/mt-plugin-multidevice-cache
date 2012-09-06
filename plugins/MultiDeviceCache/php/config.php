@@ -7,7 +7,7 @@ class MultiDeviceCache extends MTPlugin {
         'key'  => 'multidevicecache',
         'author_name' => 'Alfasado Inc.',
         'author_link' => 'http://alfasado.net/',
-        'version'     => '0.1',
+        'version'     => '0.2',
         'description' => 'Multi device cache for DynamicMTML.',
         'config_settings' => array(
             'EnableMultiDeviceCachePC' => array( 'default' => '1' ),
@@ -34,7 +34,7 @@ class MultiDeviceCache extends MTPlugin {
     function callback_post_return ( $mt, &$ctx, &$args, &$content ) {
         $app = $ctx->stash( 'bootstrapper' );
         $path = $this->__get_cache_path( $app, $ctx );
-        if (! file_exists( $path ) ) {
+        if ( $path && (! file_exists( $path ) ) ) {
             $app->write2file( $path, $content );
         }
     }
@@ -43,6 +43,7 @@ class MultiDeviceCache extends MTPlugin {
         require_once( 'dynamicmtml.util.php' );
         $blog = $ctx->stash( 'blog' );
         $request = $app->stash( 'file' );
+        $query = $app->query_string;
         $chache_dir = $blog->site_path() . DIRECTORY_SEPARATOR . $app->config( 'MultiDeviceCacheDir' );
         $fp = $app->get_agent( 'Keitai' );
         $sp = $app->get_agent( 'Smartphone' );
@@ -62,7 +63,7 @@ class MultiDeviceCache extends MTPlugin {
                     $ua = 'pc';
                 }
             }
-            if (! $app->config( 'EnableMultiDeviceCachePC' ) ) {
+            if (! $app->config( 'EnableMultiDeviceCacheSP' ) ) {
                 return '';
             }
         }
@@ -76,7 +77,11 @@ class MultiDeviceCache extends MTPlugin {
                 return '';
             }
         }
-        return $chache_dir . DIRECTORY_SEPARATOR . $ua . '_' . md5( $request );
+        if ( $query ) {
+            return $chache_dir . DIRECTORY_SEPARATOR . $ua . '_' . md5( $request ) . '_' . md5( $query );
+        } else {
+            return $chache_dir . DIRECTORY_SEPARATOR . $ua . '_' . md5( $request );
+        }
     }
 }
 

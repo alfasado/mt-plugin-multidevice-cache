@@ -1,7 +1,7 @@
 id  : MultiDeviceCache
 key : multidevicecache
 name: MultiDeviceCache
-version: 0.1
+version: 0.2
 description: '<__trans phrase="Multi device cache for DynamicMTML.">'
 l10n_class: MultiDeviceCache::L10N
 author_name: Alfasado Inc.
@@ -12,5 +12,3 @@ config_settings:
         default: multidevicecache
 callbacks:
     build_file: $multidevicecache::MultiDeviceCache::Plugin::_build_file
-
-# TODO::query_string
